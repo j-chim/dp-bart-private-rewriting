@@ -214,7 +214,6 @@ class PretrainExperiment(Experiment):
                 downstream_test_data=self.downstream_test_data
                 )
         self.dataset.load_and_process()
-
         print('Initializing model...')
         self._init_model()
 
@@ -308,12 +307,17 @@ class PretrainExperiment(Experiment):
         else:
             raise Exception('Incorrect optimizer type specified.')
 
+        print(self.model)
+
         if self.two_optimizers:
             self.enc_optimizer = optimizer(
-                self.model.encoder.parameters(), lr=self.learning_rate,
+                # TODO remove - troubleshooting
+                # nested .model -> DPBart - DPBart_Private - BART
+                self.model.model.model.encoder.parameters(), lr=self.learning_rate,
                 weight_decay=self.weight_decay)
+                # TODO remove - troubleshooting
             self.dec_optimizer = optim.Adam(
-                self.model.decoder.parameters(), lr=self.learning_rate,
+                self.model.model.model.decoder.parameters(), lr=self.learning_rate,
                 weight_decay=self.weight_decay)
         else:
             self.optimizer = optimizer(self.model.parameters(),
@@ -409,9 +413,10 @@ class PretrainExperiment(Experiment):
             loss.backward()
 
             if self.two_optimizers:
-                torch.nn.utils.clip_grad_norm_(self.model.encoder.parameters(),
+                # TODO remove - troubleshooting
+                torch.nn.utils.clip_grad_norm_(self.model.model.model.encoder.parameters(),
                                                max_norm=1)
-                torch.nn.utils.clip_grad_norm_(self.model.decoder.parameters(),
+                torch.nn.utils.clip_grad_norm_(self.model.model.model.decoder.parameters(),
                                                max_norm=1)
             else:
                 torch.nn.utils.clip_grad_norm_(self.model.parameters(),
