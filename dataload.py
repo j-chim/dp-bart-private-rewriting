@@ -173,7 +173,8 @@ class DPRewriteDataset(object):
 
         elif self.dataset_name == 'openwebtext':
             print("Preparing Openwebtext dataset...")
-            self._load_hf('openwebtext')
+            self._load_hf("j-chim/openwebtext-2m")
+            #self._load_hf('openwebtext')
         elif self.dataset_name == 'wikipedia':
             print("Preparing Wikipedia dataset...")
             self._load_hf('wikipedia', subset='20200501.en')
