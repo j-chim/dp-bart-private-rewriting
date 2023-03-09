@@ -173,7 +173,8 @@ class DPRewriteDataset(object):
 
         elif self.dataset_name == 'openwebtext':
             print("Preparing Openwebtext dataset...")
-            self._load_hf("j-chim/openwebtext-2m")
+            # quick workaround to avoid downloading the whole compressed file each time
+            self._load_hf("j-chim/openwebtext-2m", use_auth_token=True)
             #self._load_hf('openwebtext')
         elif self.dataset_name == 'wikipedia':
             print("Preparing Wikipedia dataset...")
@@ -213,8 +214,8 @@ class DPRewriteDataset(object):
                 shuffle=self.shuffle)
             print('Num test:', len(self.test_data))
 
-    def _load_hf(self, name, subset=None, target_column_dict=None,
-                 large=False):
+    def _load_hf(self, name, subset=None, target_column_dict=None, 
+                 use_auth_token=False, large=False):
         '''
         Description
         -----------
@@ -246,9 +247,16 @@ class DPRewriteDataset(object):
             os.makedirs(cache_dir)
 
         if subset is not None:
-            data = load_dataset(name, subset, cache_dir=cache_dir)
+            data = load_dataset(
+                name, 
+                subset, 
+                cache_dir=cache_dir, 
+                use_auth_token=use_auth_token)
         else:
-            data = load_dataset(name, cache_dir=cache_dir)
+            data = load_dataset(
+                name, 
+                cache_dir=cache_dir, 
+                use_auth_token=use_auth_token)
 
         # If specific column names specified as 'text' and 'label'
         # (all others are discarded)
