@@ -1,17 +1,13 @@
 from models.autoencoders.general_classes import Autoencoder_Transformer, GeneralModelConfig
 import os
-import copy
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 from torch.nn import Parameter
-import math
 import numpy as np
 from transformers import BartForConditionalGeneration, BartConfig, BartModel
 from transformers.models.bart.modeling_bart import BartPretrainedModel
 from transformers.modeling_outputs import Seq2SeqLMOutput
 from utils import load_neurons_for_pruning, determine_neurons_to_prune, add_neurons_to_prune, non_intersection
-import pdb
 
 
 class DPBartModelConfig(GeneralModelConfig):
@@ -27,6 +23,7 @@ class DPBart(Autoencoder_Transformer):
     def __init__(self, config):
         super().__init__()
         self.config = config
+        self.max_seq_len = config.max_seq_len
         if config.private or not config.no_clipping:
             bart_config = BartConfig.from_pretrained(self.transformer_type)
             self.model = DPBart_Private(

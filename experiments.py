@@ -11,7 +11,6 @@ import json
 from tqdm import tqdm
 from copy import deepcopy
 import os
-import tempfile
 from abc import ABC, abstractmethod
 from settings import Settings
 import torch
@@ -23,8 +22,6 @@ from sklearn.metrics import precision_recall_fscore_support
 from sacrebleu.metrics import BLEU
 from bert_score import BERTScorer
 os.environ['MPLCONFIGDIR'] = os.getcwd() + '/configs/'
-import pdb
-from utils import load_neurons_for_pruning, determine_neurons_to_prune, add_neurons_to_prune
 
 import warnings
 warnings.filterwarnings('ignore')
